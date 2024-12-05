@@ -10,7 +10,7 @@ public class DatosLibro {
 
     @JsonAlias("title") String titulo;
 
-    @JsonAlias("authors")  List<Autor> autor;
+    //@JsonAlias("authors")  List<Autor> autor;
 
     @JsonAlias("languages") List<String> idioma;
 
