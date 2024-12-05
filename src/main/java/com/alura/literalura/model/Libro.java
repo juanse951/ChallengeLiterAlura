@@ -30,9 +30,13 @@ public class Libro {
 
     public Libro(){}
 
-    public Libro(String nombreLibro) {
-        this.titulo = nombreLibro;
+    public Libro(DatosLibro datosLibro, Autor autor) {
+        this.titulo = datosLibro.titulo;
+        this.idioma = datosLibro.idioma;
+        this.numeroDeDescargas = datosLibro.numeroDeDescargas;
+        this.autor = autor;
     }
+
 
     public Long getId() {
         return id;

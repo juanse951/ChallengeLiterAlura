@@ -1,5 +1,6 @@
 package com.alura.literalura.principal;
 
+import com.alura.literalura.model.DatosLibro;
 import com.alura.literalura.repository.LibroRepository;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
@@ -54,9 +55,12 @@ public class Principal {
         }
     }
 
-    private void buscarLibroPorTitulo() {
+    private DatosLibro getDatosLibro(){
         System.out.println("Escribe el nombre del libro que deseas buscar: ");
         var nombreLibro
+    }
+    private void buscarLibroPorTitulo() {
+
     }
 }
 
