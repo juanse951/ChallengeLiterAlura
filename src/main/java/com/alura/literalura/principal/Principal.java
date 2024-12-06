@@ -1,10 +1,13 @@
 package com.alura.literalura.principal;
 
+import com.alura.literalura.model.Datos;
 import com.alura.literalura.model.DatosLibro;
+import com.alura.literalura.model.Libro;
 import com.alura.literalura.repository.LibroRepository;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Principal {
@@ -15,53 +18,51 @@ public class Principal {
     private Scanner teclado = new Scanner(System.in);
     private LibroRepository repositorio;
 
-    public Principal(LibroRepository repository){
-        this.repositorio = repository;
-    }
+    private Optional<Libro> libroBuscado;
+
+//    public Principal(LibroRepository repository) {
+//        this.repositorio = repository;
+//    }
 
 
-    public void muestraElMenu(){
-        var opcion = -1;
-        while (opcion !=0){
-            var menu = """
-                    Elíje la opción a través de su número:
-                    1- Buscar libro por titulo
-                    2- Listar libros registrados
-                    3- Listar autores registrados
-                    4- Listar autores vivos en un determinado año
-                    5- Listar libros por idioma
-                    \s
-                    0 - Salir
-                   \s""";
-            System.out.println(menu);
+    public void muestraElMenu() {
+//        var opcion = -1;
+//        while (opcion != 0) {
+//            var menu = """
+//                     Elíje la opción a través de su número:
+//                     1- Buscar libro por titulo
+//                     2- Listar libros registrados
+//                     3- Listar autores registrados
+//                     4- Listar autores vivos en un determinado año
+//                     5- Listar libros por idioma
+//                     \s
+//                     0 - Salir
+//                    \s""";
+//            System.out.println(menu);
+//            opcion = teclado.nextInt();
+//            teclado.nextLine();
+            var json = consumoAPI.obtenerDatos(URL_BASE);
+            System.out.println(json);
+            var datos = conversor.obtenerDatos(json, Datos.class);
 
+//            switch (opcion) {
+//                case 1:
+////                    buscarLibroPorTitulo();
+////                    break;
+//                case 2:
+//                    System.out.println("hola");
+//                    break;
+//                case 0:
+//                    System.out.println("Cerrando la aplicación...");
+//                    break;
+//                default:
+//                    System.out.println("Opción inválida");
+//            }
         }
-
-
-        var json = consumoAPI.obtenerDatos(URL_BASE);
-        System.out.println(json);
-        opcion = teclado.nextInt();
-        teclado.nextLine();
-
-        switch (opcion){
-            case 1:
-                buscarLibroPorTitulo();
-                break;
-            case 0:
-                System.out.println("Cerrando la aplicación...");
-                break;
-            default:
-                System.out.println("Opción inválida");
-        }
     }
 
-    private DatosLibro getDatosLibro(){
-        System.out.println("Escribe el nombre del libro que deseas buscar: ");
-        var nombreLibro
-    }
-    private void buscarLibroPorTitulo() {
 
-    }
-}
+
+
 
 

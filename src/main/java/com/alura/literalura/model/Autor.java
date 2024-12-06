@@ -16,12 +16,12 @@ public class Autor {
     @Column(unique = true, nullable = false)
     private String nombre;
 
-    private Double fechaDeNacimiento;
+    private String fechaDeNacimiento;
 
-    private Double fechaDeFallecimiento;
+    private String fechaDeFallecimiento;
 
     @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Libro> libros = new ArrayList<>();
+    private List<Libro> libros;
 
     public Autor(){}
 
@@ -47,19 +47,19 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public Double getFechaDeNacimiento() {
+    public String getFechaDeNacimiento() {
         return fechaDeNacimiento;
     }
 
-    public void setFechaDeNacimiento(Double fechaDeNacimiento) {
+    public void setFechaDeNacimiento(String fechaDeNacimiento) {
         this.fechaDeNacimiento = fechaDeNacimiento;
     }
 
-    public Double getFechaDeFallecimiento() {
+    public String getFechaDeFallecimiento() {
         return fechaDeFallecimiento;
     }
 
-    public void setFechaDeFallecimiento(Double fechaDeFallecimiento) {
+    public void setFechaDeFallecimiento(String fechaDeFallecimiento) {
         this.fechaDeFallecimiento = fechaDeFallecimiento;
     }
 

@@ -7,6 +7,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Locale;
+
 @SpringBootApplication
 public class LiteraluraApplication implements CommandLineRunner {
 
@@ -14,12 +16,13 @@ public class LiteraluraApplication implements CommandLineRunner {
 	private LibroRepository repository;
 
 	public static void main(String[] args) {
+		Locale.setDefault(Locale.US);
 		SpringApplication.run(LiteraluraApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		Principal principal = new Principal(repository);
+		Principal principal = new Principal();
 		principal.muestraElMenu();
 	}
 }

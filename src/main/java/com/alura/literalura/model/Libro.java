@@ -16,25 +16,26 @@ public class Libro {
     @Column(nullable = false)
     private String titulo;
 
-    //private List<Autor> autor;
+    private List<Autor> autor;
 
-    @ElementCollection
-    @CollectionTable(name = "idiomas", joinColumns = @JoinColumn(name = "libro_id"))
-    @Column(name = "idioma")
-    private List<String> idioma = new ArrayList<>();
+//    @ElementCollection
+//    @CollectionTable(name = "idiomas", joinColumns = @JoinColumn(name = "libro_id"))
+//    @Column(name = "idioma")
+    private TipoIdioma idioma;
 
     private Double numeroDeDescargas;
 
     @ManyToOne
-    private Autor autor;
+    private Autor autore;
+
 
     public Libro(){}
 
-    public Libro(DatosLibro datosLibro, Autor autor) {
-        this.titulo = datosLibro.titulo;
-        this.idioma = datosLibro.idioma;
-        this.numeroDeDescargas = datosLibro.numeroDeDescargas;
-        this.autor = autor;
+    public Libro(DatosLibro datosLibro) {
+        this.titulo = datosLibro.titulo();
+        this.idioma = datosLibro.idioma();
+        this.numeroDeDescargas = datosLibro.numeroDeDescargas();
+        this.autor = datosLibro.autor();
     }
 
 
@@ -54,13 +55,13 @@ public class Libro {
         this.titulo = titulo;
     }
 
-//    public List<Autor> getAutor() {
-//        return autor;
-//    }
-//
-//    public void setAutor(List<Autor> autor) {
-//        this.autor = autor;
-//    }
+    public List<Autor> getAutor() {
+        return autor;
+    }
+
+    public void setAutor(List<Autor> autor) {
+        this.autor = autor;
+    }
 
     public List<String> getIdioma() {
         return idioma;
@@ -78,13 +79,6 @@ public class Libro {
         this.numeroDeDescargas = numeroDeDescargas;
     }
 
-    public Autor getAutor() {
-        return autor;
-    }
-
-    public void setAutor(Autor autor) {
-        this.autor = autor;
-    }
 
     @Override
     public String toString() {
