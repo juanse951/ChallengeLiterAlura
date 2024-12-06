@@ -2,8 +2,6 @@ package com.alura.literalura.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name="libros")
 public class Libro {
@@ -14,19 +12,21 @@ public class Libro {
 
     private String titulo;
 
-    private String autor;
-
     @Enumerated(EnumType.STRING)
     private TipoIdioma idioma;
 
     private Double numeroDeDescargas;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "autor_id")
+    private Autor autor;
+
     public Libro(){}
 
     public Libro(DatosLibro datosLibro) {
         this.titulo = datosLibro.titulo();
-        this.autor = datosLibro.autor();
-        this.idioma = TipoIdioma.fromString(datosLibro.idioma());
+       // this.autor = new Autor(datosLibro.autores().get(0));
+        this.idioma = TipoIdioma.fromString(datosLibro.idioma().get(0));
         this.numeroDeDescargas = datosLibro.numeroDeDescargas();
 
     }
@@ -47,11 +47,11 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public String getAutor() {
+    public Autor getAutor() {
         return autor;
     }
 
-    public void setAutor(String autor) {
+    public void setAutor(Autor autor) {
         this.autor = autor;
     }
 
@@ -73,11 +73,11 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "--------Libro--------" + '\''+
-                "Titulo='" + titulo + '\'' +
-                "Autor=" + autor + '\'' +
-                "Idioma=" + idioma + '\''+
-                "Numero de descargas=" + numeroDeDescargas + '\''+
+        return "--------Libro--------\n" +
+                "Titulo: " + titulo + "\n" +
+                "Autor: " + autor + "\n" +
+                "Idioma: " + idioma + "\n" +
+                "Numero de descargas: " + numeroDeDescargas + "\n"+
                 "---------------------";
     }
 }

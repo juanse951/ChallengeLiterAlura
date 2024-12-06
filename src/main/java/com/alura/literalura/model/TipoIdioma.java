@@ -9,18 +9,22 @@ public enum TipoIdioma {
 
     portugues("pt");
 
-    private String tipoIdiomaOmdb;
+    private String codigoIdioma;
 
-    TipoIdioma(String tipoIdiomaOmdb){
-        this.tipoIdiomaOmdb = tipoIdiomaOmdb;
+    TipoIdioma(String codigoIdioma){
+        this.codigoIdioma = codigoIdioma;
     }
 
     public static TipoIdioma fromString(String text) {
         for (TipoIdioma tipoIdioma : TipoIdioma.values()) {
-            if (tipoIdioma.tipoIdiomaOmdb.equalsIgnoreCase(text)) {
+            if (tipoIdioma.codigoIdioma.equalsIgnoreCase(text)) {
                 return tipoIdioma;
             }
         }
         throw new IllegalArgumentException("Ninguna idioma encontrada: " + text);
+    }
+
+    public String getCodigoIdioma() {
+        return codigoIdioma;
     }
 }
