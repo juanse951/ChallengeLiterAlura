@@ -2,7 +2,6 @@ package com.alura.literalura.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,40 +10,33 @@ public class Libro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
 
-    @Column(nullable = false)
     private String titulo;
 
-    private List<Autor> autor;
+    private String autor;
 
-//    @ElementCollection
-//    @CollectionTable(name = "idiomas", joinColumns = @JoinColumn(name = "libro_id"))
-//    @Column(name = "idioma")
+    @Enumerated(EnumType.STRING)
     private TipoIdioma idioma;
 
     private Double numeroDeDescargas;
-
-    @ManyToOne
-    private Autor autore;
-
 
     public Libro(){}
 
     public Libro(DatosLibro datosLibro) {
         this.titulo = datosLibro.titulo();
-        this.idioma = datosLibro.idioma();
-        this.numeroDeDescargas = datosLibro.numeroDeDescargas();
         this.autor = datosLibro.autor();
+        this.idioma = TipoIdioma.fromString(datosLibro.idioma());
+        this.numeroDeDescargas = datosLibro.numeroDeDescargas();
+
     }
 
-
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        Id = id;
     }
 
     public String getTitulo() {
@@ -55,19 +47,19 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<Autor> getAutor() {
+    public String getAutor() {
         return autor;
     }
 
-    public void setAutor(List<Autor> autor) {
+    public void setAutor(String autor) {
         this.autor = autor;
     }
 
-    public List<String> getIdioma() {
+    public TipoIdioma getIdioma() {
         return idioma;
     }
 
-    public void setIdioma(List<String> idioma) {
+    public void setIdioma(TipoIdioma idioma) {
         this.idioma = idioma;
     }
 
@@ -78,7 +70,6 @@ public class Libro {
     public void setNumeroDeDescargas(Double numeroDeDescargas) {
         this.numeroDeDescargas = numeroDeDescargas;
     }
-
 
     @Override
     public String toString() {

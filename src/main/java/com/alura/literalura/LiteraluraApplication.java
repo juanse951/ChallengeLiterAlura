@@ -1,7 +1,7 @@
 package com.alura.literalura;
 
 import com.alura.literalura.principal.Principal;
-import com.alura.literalura.repository.LibroRepository;
+import com.alura.literalura.repository.AutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +13,7 @@ import java.util.Locale;
 public class LiteraluraApplication implements CommandLineRunner {
 
 	@Autowired
-	private LibroRepository repository;
+	private AutorRepository repository;
 
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.US);

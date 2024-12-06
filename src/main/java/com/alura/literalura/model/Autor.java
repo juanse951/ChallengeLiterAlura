@@ -2,7 +2,6 @@ package com.alura.literalura.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,16 +10,17 @@ public class Autor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String nombre;
 
     private String fechaDeNacimiento;
 
     private String fechaDeFallecimiento;
 
-    @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+   // @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Transient
     private List<Libro> libros;
 
     public Autor(){}
@@ -32,11 +32,11 @@ public class Autor {
     }
 
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.Id = id;
     }
 
     public String getNombre() {
@@ -61,14 +61,6 @@ public class Autor {
 
     public void setFechaDeFallecimiento(String fechaDeFallecimiento) {
         this.fechaDeFallecimiento = fechaDeFallecimiento;
-    }
-
-    public List<Libro> getLibros() {
-        return libros;
-    }
-
-    public void setLibros(List<Libro> libros) {
-        this.libros = libros;
     }
 
     @Override
