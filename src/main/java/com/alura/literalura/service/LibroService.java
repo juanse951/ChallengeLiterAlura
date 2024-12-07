@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 @Service
@@ -26,11 +27,22 @@ public class LibroService {
         DatosLibro datosLibro = datos.resultados().get(0);
         DatosAutor datosAutor = datosLibro.autores().get(0);
 
+        // Buscar al autor en la base de datos
         Autor autor = autorRepository.findByNombre(datosAutor.nombre())
-                .orElseGet(() -> autorRepository.save(new Autor(datosAutor)));
+                .map(autorRepository::save)
+                .orElseGet(() ->{
+                    // Si el autor ya existe, lo gestionamos con merge
+                    Autor nuevoAutor = new Autor(datosAutor);
+                    return autorRepository.save(nuevoAutor); // Persistir el autor y asegurarnos de que esté gestionado
+                });
 
-        // Crear el libro
-        Libro libro = new Libro(datosLibro);
+        // Buscar el libro por titulo
+        Optional<Libro> libroExistente = libroRepository.findByTitulo(datosLibro.titulo());
+
+        // Si el libro existe, lo actualizamos, si no, lo creamos
+        Libro libro = libroExistente.orElseGet(() -> new Libro(datosLibro));
+
+        // Asociar el autor al libro
         libro.setAutor(autor);
 
         // Evitar duplicados en la lista del autor
@@ -42,6 +54,7 @@ public class LibroService {
             autor.getLibros().add(libro);
         }
 
+        // Guardar el libro en la base de datos
         return libroRepository.save(libro);
     }
 
