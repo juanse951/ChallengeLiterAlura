@@ -14,6 +14,7 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
+    @Column(nullable = false, unique = true)
     private String nombre;
 
     private String fechaDeNacimiento;
