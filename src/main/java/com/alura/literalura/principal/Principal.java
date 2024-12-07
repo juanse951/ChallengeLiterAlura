@@ -20,7 +20,7 @@ public class Principal {
     private LibroRepository libroRepository;
     private AutorRepository autorRepository;
 
-    private Optional<Libro> libroBuscado;
+    //private Optional<Libro> libroBuscado;
 
     public Principal(LibroRepository libroRepository,AutorRepository autorRepository) {
         this.libroRepository = libroRepository;
@@ -81,20 +81,30 @@ public class Principal {
         if(!datos.resultados().isEmpty()){
             DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
 
+            //verificar si el autor ya existe en la base de datos
+            DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
+            Optional<Autor> autorOptional = autorRepository.findByNombre(datosAutor.nombre());
+
+            Autor autor;
+            if(autorOptional.isPresent()){
+                //Si el autor ya existe,lo usamos
+                autor = autorOptional.get();
+            }else{
+                //si el autor no existe, lo creamos
+                autor = new Autor(datosAutor);
+            }
+
             // Crear el libro con los datos obtenidos
             Libro libro = new Libro(datosLibro);
-
-            // Obtener el autor desde DatosLibro y crear el autor
-            DatosAutor datosAutor = datosLibro.autores().get(0); // Tomamos el primer autor
-            Autor autor = new Autor(datosAutor);
-
             // Asignar el autor al libro
-            libro.setAutor(autor); // Aquí ya no es una lista, sino un solo autor
+            libro.setAutor(autor);
 
-            // Agregar el libro a la lista de libros del autor (relación bidireccional)
-            if(autor.getLibros() == null){
+            // Inicializar la lista si es null
+            if(autor.getLibros()== null){
                 autor.setLibros(new ArrayList<>());
             }
+
+            //Agrega el libro a la lista de libros del Autor
             autor.getLibros().add(libro);
 
             // Guardar el libro en el libroRepository
