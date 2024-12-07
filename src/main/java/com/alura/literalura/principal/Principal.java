@@ -5,6 +5,7 @@ import com.alura.literalura.repository.AutorRepository;
 import com.alura.literalura.repository.LibroRepository;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
+import com.alura.literalura.service.LibroService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +18,16 @@ public class Principal {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatos conversor = new ConvierteDatos();
     private Scanner teclado = new Scanner(System.in);
-    private LibroRepository libroRepository;
+    private LibroService libroService;
     private AutorRepository autorRepository;
 
-    //private Optional<Libro> libroBuscado;
-
-    public Principal(LibroRepository libroRepository,AutorRepository autorRepository) {
-        this.libroRepository = libroRepository;
+    public Principal(LibroService libroService, AutorRepository autorRepository) {
+        this.libroService = libroService;
         this.autorRepository = autorRepository;
+    }
+
+    public Principal(LibroService libroService) {
+        this.libroService = libroService;
     }
 
     public void muestraElMenu() {
@@ -79,32 +82,11 @@ public class Principal {
         Datos datos = getDatos();// Obtienes la lista de libros
 
         if(!datos.resultados().isEmpty()){
-            DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
-            DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
-
-            // Buscar al autor por su nombre en la base de datos
-            Autor autor = autorRepository.findByNombre(datosAutor.nombre())
-                    .orElseGet(() ->{
-                        // Si no existe, crear un nuevo autor
-                        Autor nuevoAutor = new Autor(datosAutor);
-                        return autorRepository.save(nuevoAutor);// Guardamos el nuevo autor
-                    });
-
-            // Crear el libro con los datos obtenidos
-            Libro libro = new Libro(datosLibro);
-            // Asignar el autor al libro
-            libro.setAutor(autor);
-
-            // Agregar el libro a la lista de libros del autor, asegurando que la lista no sea null
-            if(autor.getLibros()== null){
-                autor.setLibros(new ArrayList<>());
-            }
-
-            // Guardar el libro en el libroRepository
-            libroRepository.save(libro);
+            String tituloLibro = datos.resultados().get(0).titulo();
+            Libro libroGuardado = libroService.guardarLibroConAutor(tituloLibro, datos);
 
             // Mostrar el libro guardado
-            System.out.println("Libro guardado: " + "\n" + libro);
+            System.out.println("Libro guardado: " + "\n" + libroGuardado);
         } else {
             System.out.println("No se encontraron libros :(");
         }
