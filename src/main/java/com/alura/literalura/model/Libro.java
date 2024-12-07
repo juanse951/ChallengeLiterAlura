@@ -17,7 +17,7 @@ public class Libro {
 
     private Double numeroDeDescargas;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "autor_id")
     private Autor autor;
 
@@ -75,7 +75,7 @@ public class Libro {
     public String toString() {
         return "--------Libro--------\n" +
                 "Titulo: " + titulo + "\n" +
-                "Autor: " + autor + "\n" +
+                "Autor: " + (autor != null ? autor.getNombre(): "Sin autor") + "\n" +
                 "Idioma: " + idioma + "\n" +
                 "Numero de descargas: " + numeroDeDescargas + "\n"+
                 "---------------------";
