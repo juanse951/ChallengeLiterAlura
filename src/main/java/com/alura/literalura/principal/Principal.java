@@ -62,7 +62,7 @@ public class Principal {
                         System.out.println("Opción inválida");
                 }
             }catch (NumberFormatException e){
-                System.out.println("Error: Debe ingresar un número válido.");
+                System.out.println("Error: Debe ingresar un número válido.\n");
             }
         }
 
@@ -72,9 +72,9 @@ public class Principal {
         List<Autor> autores = autorRepository.findAll();
 
         if (autores.isEmpty()) {
-            System.out.println("No hay autores registrados.");
+            System.out.println("No hay autores registrados.\n");
         } else {
-            System.out.println("Autores disponibles:");
+            System.out.println("Autores disponibles: \n");
             autores.forEach(System.out::println);
         }
     }
@@ -82,7 +82,7 @@ public class Principal {
     private void buscarLibroPorTitulo() {
         Datos datos = getDatos();// Obtienes la lista de libros
 
-        if(!datos.resultados().isEmpty()){
+        if (!datos.resultados().isEmpty()) {
             DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
             DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
 
@@ -91,7 +91,7 @@ public class Principal {
 
             // Buscar al autor por su nombre en la base de datos
             Autor autor = autorRepository.findByNombre(datosAutor.nombre())
-                    .orElseGet(() ->{
+                    .orElseGet(() -> {
                         // Si no existe, crear un nuevo autor
                         Autor nuevoAutor = new Autor(datosAutor);
                         return autorRepository.save(nuevoAutor);// Guardamos el nuevo autor
@@ -100,26 +100,26 @@ public class Principal {
             // Asignar el autor al libro
             libro.setAutor(autor);
 
-
-
             // Evitar duplicados en la lista del autor
             if (autor.getLibros() == null) {
                 autor.setLibros(new ArrayList<>());
             }
 
-            if (!autor.getLibros().contains(libro)) {
+            // Verificar si el libro ya está registrado para este autor
+            boolean libroExiste = autor.getLibros().stream()
+                    .anyMatch(l -> l.getTitulo().equalsIgnoreCase(libro.getTitulo()));
+
+            if (libroExiste) {
+                System.out.println("El libro ya esta registrado para este autor.\n");
+            } else {
+                //si no esta registrado, agregar el libro
                 autor.getLibros().add(libro);
+                libroRepository.save(libro);
+                System.out.println("Libro guardado: " + "\n" + libro);
             }
-
-            // Guardar el libro en el libroRepository
-            libroRepository.save(libro);
-
-            // Mostrar el libro guardado
-            System.out.println("Libro guardado: " + "\n" + libro);
         } else {
-            System.out.println("No se encontraron libros :(");
+            System.out.println("No se encontraron libros T.T");
         }
-
     }
 
     private Datos getDatos(){
