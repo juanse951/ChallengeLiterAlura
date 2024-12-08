@@ -8,7 +8,6 @@ import com.alura.literalura.service.ConvierteDatos;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class Principal {
@@ -19,8 +18,6 @@ public class Principal {
     private Scanner teclado = new Scanner(System.in);
     private LibroRepository libroRepository;
     private AutorRepository autorRepository;
-
-    //private Optional<Libro> libroBuscado;
 
     public Principal(LibroRepository libroRepository,AutorRepository autorRepository) {
         this.libroRepository = libroRepository;
@@ -41,24 +38,31 @@ public class Principal {
                      0 - Salir
                     \s""";
             System.out.println(menu);
-            opcion = teclado.nextInt();
-            teclado.nextLine();
 
-            switch (opcion) {
-                case 1:
-                    buscarLibroPorTitulo();
-                    break;
-                case 2:
-                    System.out.println("hola");
-                    break;
-                case 3:
-                    autoresRegistrados();
-                    break;
-                case 0:
-                    System.out.println("Cerrando la aplicación...");
-                    break;
-                default:
-                    System.out.println("Opción inválida");
+            System.out.println("Ingrese una opción valida: ");
+            String entrada = teclado.nextLine();
+
+            try {
+                opcion = Integer.parseInt(entrada);
+
+                switch (opcion) {
+                    case 1:
+                        buscarLibroPorTitulo();
+                        break;
+                    case 2:
+                        System.out.println("hola");
+                        break;
+                    case 3:
+                        autoresRegistrados();
+                        break;
+                    case 0:
+                        System.out.println("Cerrando la aplicación...");
+                        break;
+                    default:
+                        System.out.println("Opción inválida");
+                }
+            }catch (NumberFormatException e){
+                System.out.println("Error: Debe ingresar un número válido.");
             }
         }
 
@@ -82,6 +86,9 @@ public class Principal {
             DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
             DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
 
+            // Crear el libro con los datos obtenidos
+            Libro libro = new Libro(datosLibro);
+
             // Buscar al autor por su nombre en la base de datos
             Autor autor = autorRepository.findByNombre(datosAutor.nombre())
                     .orElseGet(() ->{
@@ -90,14 +97,18 @@ public class Principal {
                         return autorRepository.save(nuevoAutor);// Guardamos el nuevo autor
                     });
 
-            // Crear el libro con los datos obtenidos
-            Libro libro = new Libro(datosLibro);
             // Asignar el autor al libro
             libro.setAutor(autor);
 
-            // Agregar el libro a la lista de libros del autor, asegurando que la lista no sea null
-            if(autor.getLibros()== null){
+
+
+            // Evitar duplicados en la lista del autor
+            if (autor.getLibros() == null) {
                 autor.setLibros(new ArrayList<>());
+            }
+
+            if (!autor.getLibros().contains(libro)) {
+                autor.getLibros().add(libro);
             }
 
             // Guardar el libro en el libroRepository

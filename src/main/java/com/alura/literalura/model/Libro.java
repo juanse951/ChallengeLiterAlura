@@ -1,6 +1,7 @@
 package com.alura.literalura.model;
 
 import jakarta.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name="libros")
@@ -10,6 +11,7 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
+    @Column(length = 500)
     private String titulo;
 
     @Enumerated(EnumType.STRING)
@@ -17,7 +19,7 @@ public class Libro {
 
     private Double numeroDeDescargas;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "autor_id")
     private Autor autor;
 
@@ -69,6 +71,18 @@ public class Libro {
 
     public void setNumeroDeDescargas(Double numeroDeDescargas) {
         this.numeroDeDescargas = numeroDeDescargas;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Libro libro = (Libro) o;
+        return Objects.equals(titulo, libro.titulo);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(titulo);
     }
 
     @Override
