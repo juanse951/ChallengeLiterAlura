@@ -29,6 +29,7 @@ public class Principal {
         while (opcion != 0) {
             var menu = """
                      Elíje la opción a través de su número:
+                     \s
                      1- Buscar libro por titulo
                      2- Listar libros registrados
                      3- Listar autores registrados
@@ -110,7 +111,7 @@ public class Principal {
                     .anyMatch(l -> l.getTitulo().equalsIgnoreCase(libro.getTitulo()));
 
             if (libroExiste) {
-                System.out.println("El libro ya esta registrado para este autor.\n");
+                System.out.println("El titulo del libro ya esta registrado :D\n");
             } else {
                 //si no esta registrado, agregar el libro
                 autor.getLibros().add(libro);
