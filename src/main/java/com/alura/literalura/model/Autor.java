@@ -21,7 +21,7 @@ public class Autor {
 
     private String fechaDeFallecimiento;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros = new ArrayList<>();
 
     public Autor() {
@@ -88,3 +88,5 @@ public class Autor {
                         .collect(Collectors.joining(", "))) + "\n";
     }
 }
+
+

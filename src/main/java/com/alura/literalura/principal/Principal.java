@@ -5,11 +5,9 @@ import com.alura.literalura.repository.AutorRepository;
 import com.alura.literalura.repository.LibroRepository;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
-import com.alura.literalura.service.LibroService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class Principal {
@@ -18,16 +16,12 @@ public class Principal {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatos conversor = new ConvierteDatos();
     private Scanner teclado = new Scanner(System.in);
-    private LibroService libroService;
+    private LibroRepository libroRepository;
     private AutorRepository autorRepository;
 
-    public Principal(LibroService libroService, AutorRepository autorRepository) {
-        this.libroService = libroService;
+    public Principal(LibroRepository libroRepository,AutorRepository autorRepository) {
+        this.libroRepository = libroRepository;
         this.autorRepository = autorRepository;
-    }
-
-    public Principal(LibroService libroService) {
-        this.libroService = libroService;
     }
 
     public void muestraElMenu() {
@@ -44,24 +38,31 @@ public class Principal {
                      0 - Salir
                     \s""";
             System.out.println(menu);
-            opcion = teclado.nextInt();
-            teclado.nextLine();
 
-            switch (opcion) {
-                case 1:
-                    buscarLibroPorTitulo();
-                    break;
-                case 2:
-                    System.out.println("hola");
-                    break;
-                case 3:
-                    autoresRegistrados();
-                    break;
-                case 0:
-                    System.out.println("Cerrando la aplicación...");
-                    break;
-                default:
-                    System.out.println("Opción inválida");
+            System.out.println("Ingrese una opción valida: ");
+            String entrada = teclado.nextLine();
+
+            try {
+                opcion = Integer.parseInt(entrada);
+
+                switch (opcion) {
+                    case 1:
+                        buscarLibroPorTitulo();
+                        break;
+                    case 2:
+                        System.out.println("hola");
+                        break;
+                    case 3:
+                        autoresRegistrados();
+                        break;
+                    case 0:
+                        System.out.println("Cerrando la aplicación...");
+                        break;
+                    default:
+                        System.out.println("Opción inválida");
+                }
+            }catch (NumberFormatException e){
+                System.out.println("Error: Debe ingresar un número válido.\n");
             }
         }
 
@@ -71,9 +72,9 @@ public class Principal {
         List<Autor> autores = autorRepository.findAll();
 
         if (autores.isEmpty()) {
-            System.out.println("No hay autores registrados.");
+            System.out.println("No hay autores registrados.\n");
         } else {
-            System.out.println("Autores disponibles:");
+            System.out.println("Autores disponibles: \n");
             autores.forEach(System.out::println);
         }
     }
@@ -81,16 +82,44 @@ public class Principal {
     private void buscarLibroPorTitulo() {
         Datos datos = getDatos();// Obtienes la lista de libros
 
-        if(!datos.resultados().isEmpty()){
-            String tituloLibro = datos.resultados().get(0).titulo();
-            Libro libroGuardado = libroService.guardarLibroConAutor(tituloLibro, datos);
+        if (!datos.resultados().isEmpty()) {
+            DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
+            DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
 
-            // Mostrar el libro guardado
-            System.out.println("Libro guardado: " + "\n" + libroGuardado);
+            // Crear el libro con los datos obtenidos
+            Libro libro = new Libro(datosLibro);
+
+            // Buscar al autor por su nombre en la base de datos
+            Autor autor = autorRepository.findByNombre(datosAutor.nombre())
+                    .orElseGet(() -> {
+                        // Si no existe, crear un nuevo autor
+                        Autor nuevoAutor = new Autor(datosAutor);
+                        return autorRepository.save(nuevoAutor);// Guardamos el nuevo autor
+                    });
+
+            // Asignar el autor al libro
+            libro.setAutor(autor);
+
+            // Evitar duplicados en la lista del autor
+            if (autor.getLibros() == null) {
+                autor.setLibros(new ArrayList<>());
+            }
+
+            // Verificar si el libro ya está registrado para este autor
+            boolean libroExiste = autor.getLibros().stream()
+                    .anyMatch(l -> l.getTitulo().equalsIgnoreCase(libro.getTitulo()));
+
+            if (libroExiste) {
+                System.out.println("El libro ya esta registrado para este autor.\n");
+            } else {
+                //si no esta registrado, agregar el libro
+                autor.getLibros().add(libro);
+                libroRepository.save(libro);
+                System.out.println("Libro guardado: " + "\n" + libro);
+            }
         } else {
-            System.out.println("No se encontraron libros :(");
+            System.out.println("No se encontraron libros T.T");
         }
-
     }
 
     private Datos getDatos(){
@@ -103,6 +132,12 @@ public class Principal {
     }
 
 }
+
+
+
+
+
+
 
 
 
