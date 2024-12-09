@@ -92,7 +92,7 @@ public class Autor {
                 "Libros: " + (libros.isEmpty() ? "Ninguno" :
                 libros.stream()
                         .map(Libro::getTitulo)
-                        .collect(Collectors.joining(", "))) + "\n";
+                        .collect(Collectors.joining(" / "))) + "\n";
     }
 }
 

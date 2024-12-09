@@ -213,7 +213,16 @@ public class Principal {
             System.out.println("No hay autores registrados.\n");
         } else {
             System.out.println("Autores disponibles: \n");
-            autores.forEach(System.out::println);
+
+            final int[] index = {1};
+
+            autores.forEach(autor -> {
+                System.out.println("--------AUTOR " + index[0] + "--------");
+                System.out.println(autor);
+                System.out.println("------------------------\n");
+
+                index[0]++;
+            });
         }
     }
 
