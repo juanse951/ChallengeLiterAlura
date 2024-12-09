@@ -226,14 +226,8 @@ public class Principal {
             Libro libro = new Libro(datosLibro);
             libro.setIdioma(idiomaPrincipal);
 
-            // Buscar al autor por su nombre en la base de datos
-            Autor autor = autorService.buscarAutorPorNombre(datosAutor.nombre())
-                    .orElseGet(() -> {
-                        // Si no existe, crear un nuevo autor
-                        Autor nuevoAutor = new Autor(datosAutor);
-                        return autorService.guardarAutor(nuevoAutor);// Guardamos el nuevo autor
-                    });
-
+            // Buscar o registrar autor
+            Autor autor = obtenerORegistrarAutor(datosAutor);
             // Asignar el autor al libro
             libro.setAutor(autor);
 
@@ -247,7 +241,7 @@ public class Principal {
                     .anyMatch(l -> l.getTitulo().equalsIgnoreCase(libro.getTitulo()));
 
             if (libroExiste) {
-                System.out.println("El titulo del libro ya esta registrado :D\n");
+                System.out.println("El titulo del libro ya esta registrado :D\n" + libro);
             } else {
                 //si no esta registrado, agregar el libro
                 autor.getLibros().add(libro);
@@ -259,9 +253,20 @@ public class Principal {
         }
     }
 }
+
+    private Autor obtenerORegistrarAutor(DatosAutor datosAutor) {
+        return autorService.buscarAutorPorNombre(datosAutor.nombre())
+                .orElseGet(() -> autorService.guardarAutor(new Autor(datosAutor)));
+    }
+
     private Datos getDatos(String tituloLibro){
-        var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ","+"));
-        return conversor.obtenerDatos(json, Datos.class);
+        try {
+            var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ", "+"));
+            return conversor.obtenerDatos(json, Datos.class);
+        }catch (Exception e){
+            System.out.println("Error al obtener datos de la API T.T " + e.getMessage());
+            return new Datos(new ArrayList<>());
+        }
     }
 
 }
