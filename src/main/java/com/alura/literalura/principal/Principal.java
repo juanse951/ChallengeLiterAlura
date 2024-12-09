@@ -173,8 +173,20 @@ public class Principal {
             DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
             DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
 
+            // Validamos el primer idioma del libro
+            String codigoIdioma = datosLibro.idioma().get(0);//// Solo tomamos el primer idioma
+            TipoIdioma idiomaPrincipal;
+            try{
+                idiomaPrincipal = TipoIdioma.fromString(codigoIdioma);// Validamos el idioma
+            } catch (IllegalArgumentException e){
+                System.out.println("Idioma no permitido.\nIdiomas válidos: español(es), ingles(en), frances(fr), portuges(pt).");
+                System.out.println("Idioma ingresado: " + codigoIdioma + "\n");
+                return; // Salimos del metodo si el idioma no es valido
+            }
+
             // Crear el libro con los datos obtenidos
             Libro libro = new Libro(datosLibro);
+            libro.setIdioma(idiomaPrincipal);
 
             // Buscar al autor por su nombre en la base de datos
             Autor autor = autorRepository.findByNombre(datosAutor.nombre())
