@@ -6,6 +6,7 @@ import com.alura.literalura.repository.LibroRepository;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class Principal {
@@ -100,10 +101,14 @@ public class Principal {
     private void obtenerAutoresVivosEn() {
         System.out.println("Indica el año, para verificar los autores vivos: ");
         int anio = -1;
+        int anioActual = LocalDate.now().getYear();
 
-        while (anio < 0){
+        while (anio < 0 || anio > anioActual){
             try {
                 anio = Integer.parseInt(teclado.nextLine());
+                if (anio < 0 || anio > anioActual) {
+                    System.out.println("Error T.T El año debe estar entre 0 y " + anioActual + ". Inténtalo nuevamente.\n");
+                }
             }catch (NumberFormatException e){
                 System.out.println("Error T.T Debes ingresar un año válido :D\n");
             }
