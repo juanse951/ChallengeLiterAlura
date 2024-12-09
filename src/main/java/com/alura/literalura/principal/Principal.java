@@ -51,7 +51,7 @@ public class Principal {
                         buscarLibroPorTitulo();
                         break;
                     case 2:
-                        System.out.println("hola");
+                        listarTodosLosLibros();
                         break;
                     case 3:
                         autoresRegistrados();
@@ -67,6 +67,24 @@ public class Principal {
             }
         }
 
+    }
+
+    private void listarTodosLosLibros() {
+        List<Libro> libros = libroRepository.findAll();
+
+        if(libros.isEmpty()){
+            System.out.println("No hay libros registrados T.T\n");
+        }else {
+            System.out.println("Libros REGISTRADOS: \n");
+            libros.forEach(libro -> {
+                System.out.println("--------LIBRO--------");
+                System.out.println("Título: " + libro.getTitulo());
+                System.out.println("Autor: " + libro.getAutor().getNombre());
+                System.out.println("Idioma: " + libro.getIdioma().name());
+                System.out.println("Número de descargas: " + libro.getNumeroDeDescargas());
+                System.out.println("---------------------\n");
+            });
+        }
     }
 
     private void autoresRegistrados() {
@@ -119,7 +137,7 @@ public class Principal {
                 System.out.println("Libro guardado: " + "\n" + libro);
             }
         } else {
-            System.out.println("No se encontraron libros T.T");
+            System.out.println("No se encontraron libros T.T\n");
         }
     }
 

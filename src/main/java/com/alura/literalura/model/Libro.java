@@ -19,7 +19,7 @@ public class Libro {
 
     private Double numeroDeDescargas;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "autor_id")
     private Autor autor;
 
