@@ -182,11 +182,21 @@ public class Principal {
 
     private void listarLibrosPorIdioma(TipoIdioma idioma){
         List<Libro> libros = libroService.obtenerLibrosPorIdioma(idioma);
+
         if(libros.isEmpty()){
             System.out.println("No hay libros disponibles en el idioma: " + idioma.name() + " T.T\n");
         }else {
             System.out.println("Libros en " + idioma.name() + ":\n");
-            libros.forEach(System.out::println);
+
+            final int[] index = {1};
+
+            libros.forEach(libro -> {
+                System.out.println("--------LIBRO#" + index[0] + "--------\n");
+                System.out.println(libro);
+                System.out.println("---------------------\n");
+
+                index[0]++;
+            });
         }
     }
 
@@ -201,12 +211,9 @@ public class Principal {
             final int[] index = {1};
 
             libros.forEach(libro -> {
-                System.out.println("--------LIBRO " + index[0] + "--------");
-                System.out.println("Título: " + libro.getTitulo());
-                System.out.println("Autor: " + libro.getAutor().getNombre());
-                System.out.println("Idioma: " + libro.getIdioma().name());
-                System.out.println("Número de descargas: " + libro.getNumeroDeDescargas());
-                System.out.println("------------------------\n");
+                System.out.println("--------LIBRO#" + index[0] + "--------\n");
+                System.out.println(libro);
+                System.out.println("---------------------\n");
 
                 index[0]++;
             });
