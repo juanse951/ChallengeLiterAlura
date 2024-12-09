@@ -35,6 +35,7 @@ public class Principal {
                      4- Listar autores vivos en un determinado año
                      5- Listar libros por idioma
                      6- Mostrar estadísticas de libros por idioma
+                     7- Top 10 libros más descargados
                      \s
                      0 - Salir
                     \s""";
@@ -65,6 +66,9 @@ public class Principal {
                     case 6:
                         mostrarEstadisticasDeLibros();
                         break;
+                    case 7:
+                        buscarTop10librosDescargados();
+                        break;
                     case 0:
                         System.out.println("Cerrando la aplicación...");
                         break;
@@ -76,6 +80,21 @@ public class Principal {
             }
         }
 
+    }
+
+    private void buscarTop10librosDescargados() {
+        List<Libro> topLibros = libroService.buscarTop10librosDescargados();
+
+        final int[] index = {1};
+        topLibros.forEach(l -> {
+                System.out.println("--------TOP " + index[0] + "--------\n" +
+                        "Titulo: " + l.getTitulo() + "\n" +
+                         "Autor: " + (l.getAutor() != null ? l.getAutor().getNombre(): "Sin autor") + "\n" +
+                        "Idioma: " + l.getIdioma() + "\n" +
+                        "Número de descargas: " + l.getNumeroDeDescargas() + "\n" +
+                        "--------------------\n");
+                        index[0]++;
+                        });
     }
 
     private void mostrarEstadisticasDeLibros() {

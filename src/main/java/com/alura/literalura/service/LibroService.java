@@ -37,4 +37,7 @@ public class LibroService {
         return libroRepository.findByTituloIgnoreCase(titulo);
     }
 
+    public List<Libro> buscarTop10librosDescargados(){
+        return libroRepository.findTop10ByOrderByNumeroDeDescargasDesc();
+    }
 }
