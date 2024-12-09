@@ -6,9 +6,7 @@ import com.alura.literalura.repository.LibroRepository;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Principal {
 
@@ -35,6 +33,7 @@ public class Principal {
                      3- Listar autores registrados
                      4- Listar autores vivos en un determinado año
                      5- Listar libros por idioma
+                     6- Mostrar estadísticas de libros por idioma
                      \s
                      0 - Salir
                     \s""";
@@ -62,6 +61,9 @@ public class Principal {
                     case 5:
                         buscarLibrosPorIdioma();
                         break;
+                    case 6:
+                        mostrarEstadisticasDeLibros();
+                        break;
                     case 0:
                         System.out.println("Cerrando la aplicación...");
                         break;
@@ -72,6 +74,26 @@ public class Principal {
                 System.out.println("Error: Debe ingresar un número válido.\n");
             }
         }
+
+    }
+
+    private void mostrarEstadisticasDeLibros() {
+        List<Object[]> estadisticas = libroRepository.obtenerEstadisticasPorIdioma();
+
+        if(estadisticas.isEmpty()){
+            System.out.println("No hay estadísticas disponibles sobre los libros por idioma T.T\n");
+        }else {
+            System.out.println("Estadísticas de libros por idioma en la base de datos: \n");
+
+            estadisticas.stream()
+                    .map(estadistica ->{
+                        TipoIdioma idioma =(TipoIdioma) estadistica[0];
+                        Long cantidad = (Long) estadistica[1];
+                        return "Idioma: " + idioma.name() + " - Cantidad: " + cantidad;
+                    })
+                    .forEach(System.out::println);
+        }
+        System.out.println();
 
     }
 
