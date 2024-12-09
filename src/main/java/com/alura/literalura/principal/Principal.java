@@ -190,13 +190,18 @@ public class Principal {
             System.out.println("No hay libros registrados T.T\n");
         }else {
             System.out.println("Libros REGISTRADOS: \n");
+
+            final int[] index = {1};
+
             libros.forEach(libro -> {
-                System.out.println("--------LIBRO--------");
+                System.out.println("--------LIBRO " + index[0] + "--------");
                 System.out.println("Título: " + libro.getTitulo());
                 System.out.println("Autor: " + libro.getAutor().getNombre());
                 System.out.println("Idioma: " + libro.getIdioma().name());
                 System.out.println("Número de descargas: " + libro.getNumeroDeDescargas());
-                System.out.println("---------------------\n");
+                System.out.println("------------------------\n");
+
+                index[0]++;
             });
         }
     }
