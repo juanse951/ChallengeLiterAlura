@@ -138,8 +138,15 @@ public class Principal {
             System.out.println("No hay autores vivos en el año: " + anio + "\n");
         }else {
             System.out.println("Autores vivos en el año " + anio + ":\n");
+
+            final int[] index = {1};
+
             autoresVivos.forEach(autor -> {
+                System.out.println("--------AUTOR#" + index[0] + "--------\n");
                 System.out.println(autor);
+                System.out.println("------------------------\n");
+
+                index[0]++;
             });
         }
     }
@@ -217,7 +224,7 @@ public class Principal {
             final int[] index = {1};
 
             autores.forEach(autor -> {
-                System.out.println("--------AUTOR " + index[0] + "--------");
+                System.out.println("--------AUTOR#" + index[0] + "--------\n");
                 System.out.println(autor);
                 System.out.println("------------------------\n");
 
