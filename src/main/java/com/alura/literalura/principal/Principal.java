@@ -56,6 +56,9 @@ public class Principal {
                     case 3:
                         autoresRegistrados();
                         break;
+                    case 5:
+                        buscarLibrosPorIdioma();
+                        break;
                     case 0:
                         System.out.println("Cerrando la aplicación...");
                         break;
@@ -67,6 +70,45 @@ public class Principal {
             }
         }
 
+    }
+
+    private void buscarLibrosPorIdioma() {
+        System.out.println("Seleccione un idioma: ");
+
+        for (int i = 0; i < TipoIdioma.values().length; i++) {
+            System.out.println((i + 1) + " - " + TipoIdioma.values()[i].name());
+        }
+        System.out.println("0 - Volver al menú principal\n");
+
+        int opcion = -1;
+
+        while(opcion < 0 || opcion > TipoIdioma.values().length){
+            try{
+                opcion = Integer.parseInt(teclado.nextLine());
+
+                if(opcion == 0){
+                    return;
+                }
+
+                if(opcion < 0 || opcion > TipoIdioma.values().length){
+                    System.out.println("Opción invalida. Por favor ingresa un número entre 0 y " + TipoIdioma.values().length);
+                }
+            }catch (NumberFormatException e){
+                System.out.println("Entrada invalida T.T Por favor ingresa un número entre 0 y " + TipoIdioma.values().length);
+            }
+        }
+        TipoIdioma idiomaSeleccionado = TipoIdioma.values()[opcion - 1];
+        listarLibrosPorIdioma(idiomaSeleccionado);
+    }
+
+    private void listarLibrosPorIdioma(TipoIdioma idioma){
+        List<Libro> libros = libroRepository.findByIdioma(idioma);
+        if(libros.isEmpty()){
+            System.out.println("No hay libros disponibles en el idioma: " + idioma.name() + "T.T\n");
+        }else {
+            System.out.println("Libros en " + idioma.name() + ":\n");
+            libros.forEach(System.out::println);
+        }
     }
 
     private void listarTodosLosLibros() {
