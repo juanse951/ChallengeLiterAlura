@@ -3,8 +3,10 @@ package com.alura.literalura.principal;
 import com.alura.literalura.model.*;
 import com.alura.literalura.repository.AutorRepository;
 import com.alura.literalura.repository.LibroRepository;
+import com.alura.literalura.service.AutorService;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
+import com.alura.literalura.service.LibroService;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -15,12 +17,12 @@ public class Principal {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatos conversor = new ConvierteDatos();
     private Scanner teclado = new Scanner(System.in);
-    private LibroRepository libroRepository;
-    private AutorRepository autorRepository;
+    private AutorService autorService;
+    private LibroService libroService;
 
-    public Principal(LibroRepository libroRepository,AutorRepository autorRepository) {
-        this.libroRepository = libroRepository;
-        this.autorRepository = autorRepository;
+    public Principal(AutorService autorService, LibroService libroService) {
+        this.autorService = autorService;
+        this.libroService = libroService;
     }
 
     public void muestraElMenu() {
@@ -79,7 +81,7 @@ public class Principal {
     }
 
     private void mostrarEstadisticasDeLibros() {
-        List<Object[]> estadisticas = libroRepository.obtenerEstadisticasPorIdioma();
+        List<Object[]> estadisticas = libroService.obtenerEstadisticasPorIdioma();
 
         if(estadisticas.isEmpty()){
             System.out.println("No hay estadísticas disponibles sobre los libros por idioma T.T\n");
@@ -113,7 +115,7 @@ public class Principal {
                 System.out.println("Error T.T Debes ingresar un año válido :D\n");
             }
         }
-    List<Autor> autoresVivos = autorRepository.findAutoresVivosEnAnio(anio);
+    List<Autor> autoresVivos = autorService.obtenerAutoresVivosEn(anio);
 
         if(autoresVivos.isEmpty()){
             System.out.println("No hay autores vivos en el año: " + anio + "\n");
@@ -155,7 +157,7 @@ public class Principal {
     }
 
     private void listarLibrosPorIdioma(TipoIdioma idioma){
-        List<Libro> libros = libroRepository.findByIdioma(idioma);
+        List<Libro> libros = libroService.obtenerLibrosPorIdioma(idioma);
         if(libros.isEmpty()){
             System.out.println("No hay libros disponibles en el idioma: " + idioma.name() + " T.T\n");
         }else {
@@ -165,7 +167,7 @@ public class Principal {
     }
 
     private void listarTodosLosLibros() {
-        List<Libro> libros = libroRepository.findAll();
+        List<Libro> libros = libroService.obtenerTodosLosLibros();
 
         if(libros.isEmpty()){
             System.out.println("No hay libros registrados T.T\n");
@@ -183,7 +185,7 @@ public class Principal {
     }
 
     private void autoresRegistrados() {
-        List<Autor> autores = autorRepository.findAll();
+        List<Autor> autores = autorService.obtenerTodosLosAutores();
 
         if (autores.isEmpty()) {
             System.out.println("No hay autores registrados.\n");
@@ -206,7 +208,7 @@ public class Principal {
             try{
                 idiomaPrincipal = TipoIdioma.fromString(codigoIdioma);// Validamos el idioma
             } catch (IllegalArgumentException e){
-                System.out.println("Idioma no permitido.\nIdiomas válidos: español(es), ingles(en), frances(fr), portuges(pt).");
+                System.out.println("Idioma original del libro no permitido.\nIdiomas válidos: español(es), ingles(en), frances(fr), portuges(pt).");
                 System.out.println("Idioma ingresado: " + codigoIdioma + "\n");
                 return; // Salimos del metodo si el idioma no es valido
             }
@@ -216,11 +218,11 @@ public class Principal {
             libro.setIdioma(idiomaPrincipal);
 
             // Buscar al autor por su nombre en la base de datos
-            Autor autor = autorRepository.findByNombre(datosAutor.nombre())
+            Autor autor = autorService.buscarAutorPorNombre(datosAutor.nombre())
                     .orElseGet(() -> {
                         // Si no existe, crear un nuevo autor
                         Autor nuevoAutor = new Autor(datosAutor);
-                        return autorRepository.save(nuevoAutor);// Guardamos el nuevo autor
+                        return autorService.guardarAutor(nuevoAutor);// Guardamos el nuevo autor
                     });
 
             // Asignar el autor al libro
@@ -240,7 +242,7 @@ public class Principal {
             } else {
                 //si no esta registrado, agregar el libro
                 autor.getLibros().add(libro);
-                libroRepository.save(libro);
+                libroService.guardarLibro(libro);
                 System.out.println("Libro guardado: " + "\n" + libro);
             }
         } else {
@@ -252,9 +254,7 @@ public class Principal {
         System.out.println("Escribe el titulo de tu libro: ");
         var tituloLibro = teclado.nextLine();
         var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ","+"));
-        //System.out.println(json);
-        Datos datos = conversor.obtenerDatos(json, Datos.class);
-        return datos;
+        return conversor.obtenerDatos(json, Datos.class);
     }
 
 }
