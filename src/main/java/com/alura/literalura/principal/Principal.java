@@ -56,6 +56,9 @@ public class Principal {
                     case 3:
                         autoresRegistrados();
                         break;
+                    case 4:
+                        obtenerAutoresVivosEn();
+                        break;
                     case 5:
                         buscarLibrosPorIdioma();
                         break;
@@ -70,6 +73,29 @@ public class Principal {
             }
         }
 
+    }
+
+    private void obtenerAutoresVivosEn() {
+        System.out.println("Indica el año, para verificar los autores vivos: ");
+        int anio = -1;
+
+        while (anio < 0){
+            try {
+                anio = Integer.parseInt(teclado.nextLine());
+            }catch (NumberFormatException e){
+                System.out.println("Error T.T Debes ingresar un año válido :D\n");
+            }
+        }
+    List<Autor> autoresVivos = autorRepository.findAutoresVivosEnAnio(anio);
+
+        if(autoresVivos.isEmpty()){
+            System.out.println("No hay autores vivos en el año: " + anio + "\n");
+        }else {
+            System.out.println("Autores vivos en el año " + anio + ":\n");
+            autoresVivos.forEach(autor -> {
+                System.out.println(autor);
+            });
+        }
     }
 
     private void buscarLibrosPorIdioma() {
@@ -104,7 +130,7 @@ public class Principal {
     private void listarLibrosPorIdioma(TipoIdioma idioma){
         List<Libro> libros = libroRepository.findByIdioma(idioma);
         if(libros.isEmpty()){
-            System.out.println("No hay libros disponibles en el idioma: " + idioma.name() + "T.T\n");
+            System.out.println("No hay libros disponibles en el idioma: " + idioma.name() + " T.T\n");
         }else {
             System.out.println("Libros en " + idioma.name() + ":\n");
             libros.forEach(System.out::println);

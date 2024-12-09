@@ -50,20 +50,20 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public String getFechaDeFallecimiento() {
-        return fechaDeFallecimiento;
-    }
-
-    public void setFechaDeFallecimiento(String fechaDeFallecimiento) {
-        this.fechaDeFallecimiento = fechaDeFallecimiento;
-    }
-
     public String getFechaDeNacimiento() {
         return fechaDeNacimiento;
     }
 
     public void setFechaDeNacimiento(String fechaDeNacimiento) {
         this.fechaDeNacimiento = fechaDeNacimiento;
+    }
+
+    public String getFechaDeFallecimiento() {
+        return fechaDeFallecimiento;
+    }
+
+    public void setFechaDeFallecimiento(String fechaDeFallecimiento) {
+        this.fechaDeFallecimiento = fechaDeFallecimiento;
     }
 
     public List<Libro> getLibros() {
@@ -79,9 +79,16 @@ public class Autor {
 
     @Override
     public String toString() {
+        // Si la fecha de nacimiento está presente, sino se indicará como desconocida
+        String fechaNacimiento = (fechaDeNacimiento != null) ? fechaDeNacimiento : "Desconocida";
+
+        // Si la fecha de fallecimiento está presente, sino se indicará como desconocida o vivo
+        String fechaFallecimiento = (fechaDeFallecimiento != null) ? fechaDeFallecimiento :
+                (fechaDeNacimiento != null ? "Aún vivo" : "Desconocida");
+
         return "Autor: " + nombre + "\n" +
-                "Fecha de nacimiento: " + fechaDeNacimiento + "\n" +
-                "Fecha de fallecimiento: " + fechaDeFallecimiento + "\n" +
+                "Fecha de nacimiento: " + fechaNacimiento + "\n" +
+                "Fecha de fallecimiento: " + fechaFallecimiento + "\n" +
                 "Libros: " + (libros.isEmpty() ? "Ninguno" :
                 libros.stream()
                         .map(Libro::getTitulo)
