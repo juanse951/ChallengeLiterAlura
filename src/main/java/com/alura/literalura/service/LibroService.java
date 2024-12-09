@@ -6,6 +6,7 @@ import com.alura.literalura.repository.LibroRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LibroService {
@@ -31,4 +32,9 @@ public class LibroService {
     public List<Object[]> obtenerEstadisticasPorIdioma() {
         return libroRepository.obtenerEstadisticasPorIdioma();
     }
+
+    public Optional<Libro> buscarLibroPorTitulo(String titulo) {
+        return libroRepository.findByTituloIgnoreCase(titulo);
+    }
+
 }

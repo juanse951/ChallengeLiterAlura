@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LibroRepository extends JpaRepository<Libro, Long> {
@@ -17,5 +18,6 @@ public interface LibroRepository extends JpaRepository<Libro, Long> {
     List<Object[]> obtenerEstadisticasPorIdioma();
 
 
+    Optional<Libro> findByTituloIgnoreCase(String titulo);
 }
 

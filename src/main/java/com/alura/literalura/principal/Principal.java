@@ -1,8 +1,6 @@
 package com.alura.literalura.principal;
 
 import com.alura.literalura.model.*;
-import com.alura.literalura.repository.AutorRepository;
-import com.alura.literalura.repository.LibroRepository;
 import com.alura.literalura.service.AutorService;
 import com.alura.literalura.service.ConsumoAPI;
 import com.alura.literalura.service.ConvierteDatos;
@@ -196,22 +194,33 @@ public class Principal {
     }
 
     private void buscarLibroPorTitulo() {
-        Datos datos = getDatos();// Obtienes la lista de libros
+        System.out.println("Escribe el titulo de tu libro: ");
+        var tituloLibro = teclado.nextLine();
 
-        if (!datos.resultados().isEmpty()) {
-            DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
-            DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
+        //Buscar primero en la base de datos
+        Optional<Libro> libroExistente = libroService.buscarLibroPorTitulo(tituloLibro);
 
-            // Validamos el primer idioma del libro
-            String codigoIdioma = datosLibro.idioma().get(0);//// Solo tomamos el primer idioma
-            TipoIdioma idiomaPrincipal;
-            try{
-                idiomaPrincipal = TipoIdioma.fromString(codigoIdioma);// Validamos el idioma
-            } catch (IllegalArgumentException e){
-                System.out.println("Idioma original del libro no permitido.\nIdiomas válidos: español(es), ingles(en), frances(fr), portuges(pt).");
-                System.out.println("Idioma ingresado: " + codigoIdioma + "\n");
-                return; // Salimos del metodo si el idioma no es valido
-            }
+        if(libroExistente.isPresent()){
+            // Mensaje cuando el libro ya está registrado
+            System.out.println("El titulo del libro ya esta registrado :D\n" + libroExistente.get());
+        }else {
+            // Buscar en la API externa si no está en la base de datos
+            Datos datos = getDatos(tituloLibro);
+
+            if (!datos.resultados().isEmpty()) {
+                DatosLibro datosLibro = datos.resultados().get(0);// Tomamos el primer libro
+                DatosAutor datosAutor = datosLibro.autores().get(0);// Tomamos el primer autor
+
+                // Validamos el primer idioma del libro
+                String codigoIdioma = datosLibro.idioma().get(0);//// Solo tomamos el primer idioma
+                TipoIdioma idiomaPrincipal;
+                try{
+                    idiomaPrincipal = TipoIdioma.fromString(codigoIdioma);// Validamos el idioma
+                } catch (IllegalArgumentException e){
+                    System.out.println("Idioma original del libro no permitido.\nIdiomas válidos: español(es), ingles(en), frances(fr), portuges(pt).");
+                    System.out.println("Idioma ingresado: " + codigoIdioma + "\n");
+                    return; // Salimos del metodo si el idioma no es valido
+                }
 
             // Crear el libro con los datos obtenidos
             Libro libro = new Libro(datosLibro);
@@ -249,10 +258,8 @@ public class Principal {
             System.out.println("No se encontraron libros T.T\n");
         }
     }
-
-    private Datos getDatos(){
-        System.out.println("Escribe el titulo de tu libro: ");
-        var tituloLibro = teclado.nextLine();
+}
+    private Datos getDatos(String tituloLibro){
         var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + tituloLibro.replace(" ","+"));
         return conversor.obtenerDatos(json, Datos.class);
     }
