@@ -1,12 +1,13 @@
 package com.alura.literalura.service;
 
+import com.alura.literalura.model.Autor;
 import com.alura.literalura.model.Libro;
 import com.alura.literalura.model.TipoIdioma;
 import com.alura.literalura.repository.LibroRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LibroService {
@@ -40,4 +41,21 @@ public class LibroService {
     public List<Libro> buscarTop10librosDescargados(){
         return libroRepository.findTop10ByOrderByNumeroDeDescargasDesc();
     }
+
+
+    public Map<Autor, DoubleSummaryStatistics> obtenerEstadisticasDescargasPorAutor() {
+        List<Libro> libros = libroRepository.findAll();
+
+        if (libros.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        return libros.stream()
+                .filter(libro -> libro.getAutor() != null)
+                .collect(Collectors.groupingBy(
+                        Libro::getAutor,
+                        Collectors.summarizingDouble(Libro::getNumeroDeDescargas)
+                ));
+    }
+
 }

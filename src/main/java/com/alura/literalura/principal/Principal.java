@@ -36,6 +36,7 @@ public class Principal {
                      5- Listar libros por idioma
                      6- Mostrar estadísticas de libros por idioma
                      7- Top 10 libros más descargados
+                     8- Mostrar estadísticas de descargas por autor
                      \s
                      0 - Salir
                     \s""";
@@ -69,6 +70,9 @@ public class Principal {
                     case 7:
                         buscarTop10librosDescargados();
                         break;
+                    case 8:
+                        mostrarEstadisticasDescargasPorAutor();
+                        break;
                     case 0:
                         System.out.println("Cerrando la aplicación...");
                         break;
@@ -82,19 +86,43 @@ public class Principal {
 
     }
 
+    private void mostrarEstadisticasDescargasPorAutor() {
+        Map<Autor, DoubleSummaryStatistics> estadisticasPorAutor = libroService.obtenerEstadisticasDescargasPorAutor();
+
+        if (estadisticasPorAutor == null || estadisticasPorAutor.isEmpty()) {
+            System.out.println("No hay datos suficientes para mostrar estadísticas.\n");
+            return;
+        }
+
+        System.out.println("Estadísticas de descargas por autor:\n");
+
+        final int[] index = {1};
+
+        estadisticasPorAutor.forEach((autor, stats) -> {
+            System.out.println("--------AUTOR#" + index[0] + "--------");
+            System.out.println("  " + (autor != null ? autor.getNombre() : "Sin autor registrado"));
+            System.out.println("  Total de descargas: " + stats.getSum());
+            System.out.println("  Promedio de descargas: " + stats.getAverage());
+            System.out.println("  Máximo de descargas: " + stats.getMax());
+            System.out.println("  Mínimo de descargas: " + stats.getMin());
+            System.out.println("--------------------\n");
+
+            index[0]++;
+        });
+    }
+
     private void buscarTop10librosDescargados() {
         List<Libro> topLibros = libroService.buscarTop10librosDescargados();
 
         final int[] index = {1};
-        topLibros.forEach(l -> {
-                System.out.println("--------TOP " + index[0] + "--------\n" +
-                        "Titulo: " + l.getTitulo() + "\n" +
-                         "Autor: " + (l.getAutor() != null ? l.getAutor().getNombre(): "Sin autor") + "\n" +
-                        "Idioma: " + l.getIdioma() + "\n" +
-                        "Número de descargas: " + l.getNumeroDeDescargas() + "\n" +
-                        "--------------------\n");
-                        index[0]++;
-                        });
+
+        topLibros.forEach(libro -> {
+            System.out.println("--------LIBRO#" + index[0] + "--------\n");
+            System.out.println(libro);
+            System.out.println("---------------------\n");
+
+            index[0]++;
+        });
     }
 
     private void mostrarEstadisticasDeLibros() {
